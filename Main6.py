@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from tkinter import messagebox, simpledialog
 import random
-from words import word_list  # Ensure you have a words.py file with a word_list variable.
+from words import word_list 
 
 
 
@@ -14,24 +14,24 @@ class HangmanGame:
         self.root = root
         self.set_default_window()
 
-        # Scaling ratios
+        
         self.default_width = 1280
         self.default_height = 800
         self.aspect_ratio = 16 / 10
 
         self.setup_responsive_callbacks()
-        self.mode = mode  # "bot" or "pvp"
-        self.rounds = rounds * (2 if mode == "pvp" else 1)  # Adjust rounds for PvP mode
+        self.mode = mode  
+        self.rounds = rounds * (2 if mode == "pvp" else 1)  
         self.rounds_counter = int(self.rounds / 2 if mode == "pvp" else self.rounds)
         self.current_round = 0
         self.current_round_count = 1
-        self.scores = [0, 0]  # [Player 1's score, Player 2's score]
+        self.scores = [0, 0]  
 
         self.players = ["Player 1", "Player 2"] if self.mode == "pvp" else ["Player", "Bot"]
-        self.current_role = 0  # Player who sets the word (only relevant in PvP)
-        self.current_guesser = 1 if self.mode == "pvp" else 0  # Player who guesses the word
+        self.current_role = 0  
+        self.current_guesser = 1 if self.mode == "pvp" else 0 
 
-        if not self.setup_game():  # If setup is canceled (e.g., during name entry), return to mode selection
+        if not self.setup_game():  
             self.back_to_menu()
             return
 
@@ -46,7 +46,7 @@ class HangmanGame:
     def setup_gui(self):
         self.label_round = ctk.CTkLabel(self.root, text=f"Round {self.current_round_count} of {self.rounds_counter}",
                                         text_color="#083D77", font=("Arial", 18))
-        self.label_round.place(relx=0.5, rely=0.1, anchor="center")  # Adjusted to responsive center position
+        self.label_round.place(relx=0.5, rely=0.1, anchor="center") 
 
         self.label_player = ctk.CTkLabel(self.root, text=f"{self.players[self.current_guesser]}'s turn to guess",
                                          text_color="#083D77", font=("Arial", 18))
@@ -198,7 +198,7 @@ class HangmanGame:
             self.end_game(False)
 
     def update_used_guesses(self):
-        # Combine guessed letters and words that were incorrect into a single string
+       
         used_guesses_text = "used Guesses:\n" + ", ".join(self.guessed_letters)
         self.used_alphabets.configure(text=used_guesses_text)
 
@@ -230,7 +230,7 @@ class HangmanGame:
         elif self.mode == "pvp":
             self.switch_roles()
             self.word = self.get_pvp_word()
-            if self.word is None:  # Cancel during word entry
+            if self.word is None: 
                 self.back_to_menu()
                 return
         self.update_used_guesses()
@@ -277,17 +277,17 @@ class HangmanGame:
         choose_mode()
 
     def set_default_window(self):
-        self.root.geometry("1280x800")  # Default 16:10 aspect ratio size
+        self.root.geometry("1280x800")  
         self.root.title("Hangman Game")
         self.root.configure(fg_color="#00E2AD")
-        self.root.minsize(640, 400)  # Ensure minimal resizing won't break layout
+        self.root.minsize(640, 400)  
 
     def setup_responsive_callbacks(self):
-        # Attach event listener for window resize
+       
         self.root.bind("<Configure>", self.on_resize)
 
     def on_resize(self, event):
-        # Ensure minimum sizes and maintain the 16:10 aspect ratio
+       
         if event.widget == self.root:
             new_width = event.width
             new_height = event.height
@@ -296,12 +296,12 @@ class HangmanGame:
             if new_height != expected_height:
                 self.root.geometry(f"{new_width}x{expected_height}")
 
-            # Scale font sizes dynamically based on new dimensions
-            font_scale = new_width / 1280  # Base font sizes on default width of 1280
+           
+            font_scale = new_width / 1280 
             self.scale_fonts(font_scale)
 
     def scale_fonts(self, scale):
-        # Dynamically adjust font sizes for all widgets
+      
         self.label_round.configure(font=("Arial", int(18 * scale)))
         self.label_player.configure(font=("Arial", int(18 * scale)))
         self.label_word.configure(font=("Arial", int(24 * scale)))
@@ -310,7 +310,7 @@ class HangmanGame:
         self.used_alphabets.configure(font=("Arial", int(18 * scale)))
 
     def update_widget_sizes(self, width, height):
-        # Example: Adjust font size dynamically
+      
         scale_x = width / self.default_width
         scale_y = height / self.default_height
         font_scale = min(scale_x, scale_y)
@@ -321,19 +321,19 @@ class HangmanGame:
         self.entry_guess.configure(font=("Arial", int(18 * font_scale)))
         self.label_tries.configure(font=("Courier", int(18 * font_scale)))
         self.used_alphabets.configure(font=("Arial", int(18 * font_scale)))
-        # Continue updating other widget sizes/fonts similarly...
+       
 
-        # Reposition elements based on new window size
+      
         self.label_tries.place(relx=0.44, rely=0.55, anchor="center")
         self.used_alphabets.place(relx=0.05, rely=0.3)
 
 def choose_limit(mode):
     def set_rounds(rounds):
         limit_window.after_cancel("all")
-        limit_window.destroy()  # Close the limit window
+        limit_window.destroy()  
         root = ctk.CTk()
         game = HangmanGame(root, mode, rounds)
-        root.mainloop()  # Open the difficulty window
+        root.mainloop()  
 
     limit_window = ctk.CTk()
     limit_window.geometry("1280x800")
